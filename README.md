@@ -8,7 +8,7 @@ The completed exercises will be evaluated by the **ScaleForge** team using the f
 
 # Instructions
 1. Duplicate this repository and push it to a private repository on your personal GitHub account. Refer [here](https://docs.github.com/en/repositories/creating-and-managing-repositories/duplicating-a-repository) to learn how to duplicate a repository.
-2. Implement the web application as described in the `Requiments` section. The candiate must use either `Next.js` or `SvelteKit` as the frontend framework. The web application must run locally by running the `npm start` command. The web application must then be accessible via a web browser at `http://localhost:3000`.
+2. Implement the web application as described in the `Requirements` section. The candiate must use either `Next.js` or `SvelteKit` as the frontend framework. The web application must run locally by running the `npm start` command. The web application must then be accessible via a web browser at `http://localhost:3000`.
 3. Push your changes to your duplicated repository.
 4. Add the following **ScaleForge** team members as collaborators to your duplicated repository:
    - `rogermadjos`
