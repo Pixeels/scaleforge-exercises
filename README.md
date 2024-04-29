@@ -15,7 +15,7 @@ The completed exercises will be evaluated by the **ScaleForge** team using the f
    - `ccpacillos`
 
 # Requirements
-The web application displays a list of members and their corresponding details. The web application must implement the UI as specified in the provided Figma [file](https://www.figma.com/file/AwrMuHBOqmAAj0g8mv4MWb/Frontend-Test-Mockup-Design?type=design&node-id=4%3A121&mode=design&t=gNzV3SQsKXfkhEJR-1). The list of members can be fetched from the provided [GraphQL API](https://account.development.opexa.io/graphql). All the necessary information for using the GraphQL API is provided in the `Docs` section in the GraphQL Playground. In particular, the web application must use the following endpoints:
+The web application displays a list of members and their corresponding details. The web application must implement the UI as specified in the provided Figma [file](https://www.figma.com/file/AwrMuHBOqmAAj0g8mv4MWb/Frontend-Test-Mockup-Design?type=design&node-id=4%3A121&mode=design&t=gNzV3SQsKXfkhEJR-1). The list of members can be fetched from the provided [GraphQL API](https://report.development.opexa.io/graphql). All the necessary information for using the GraphQL API is provided in the `Docs` section in the GraphQL Playground. In particular, the web application must use the following endpoints:
 - `Query.members` - fetch the list of members
 - `Query.membersByName` - search members by name
 - `Query.membersByEmailAddress` - search members by email address
