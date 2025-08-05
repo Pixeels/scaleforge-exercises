@@ -22,6 +22,8 @@ import {
   emailOptions,
   mobileOptions,
   domainOptions,
+  verificationStatus,
+  memberStatus,
 } from "../data/filterOptions";
 import MultiSelectDropdown from '../components/MultiSelectDropdown';
 import SimpleDropdown from '../components/SimpleDropdown';
@@ -93,7 +95,21 @@ const MembersTable = () => {
       after: cursors[currentPage],
       sortBy: sortField,
       sortOrder: sortOrder,
-      filter: undefined,
+      filter: {
+        name: filters.usernames.length > 0 ? { equal: filters.usernames[0] } : undefined,
+        emailAddress: filters.emails.length > 0 ? { equal: filters.emails[0] } : undefined,
+        mobileNumber: filters.mobileNumbers.length > 0 ? { equal: filters.mobileNumbers[0] } : undefined,
+        domain: filters.domains.length > 0 ? { equal: filters.domains[0] } : undefined,
+        verificationStatus: filters.verificationStatus.length > 0 ? { equal: filters.verificationStatus[0] }: undefined,
+        status: filters.memberStatus.length > 0 ? { equal: filters.memberStatus[0] }: undefined,
+        dateTimeCreated:
+          filters.dateRange?.from && filters.dateRange?.to
+            ? {
+                greaterThanOrEqual: filters.dateRange.from.toISOString(),
+                lesserThanOrEqual: filters.dateRange.to.toISOString(),
+              }
+            : undefined,
+        },
     },
     notifyOnNetworkStatusChange: true,
   });
@@ -212,16 +228,6 @@ const MembersTable = () => {
     return `${year}-${month}-${day} ${timeStr}`;
   };
 
-  const filterFields = [
-    "Name",
-    "Verification Status",
-    "Email Address",
-    "Mobile Number",
-    "Domain",
-    "Date Registered",
-    "Status",
-    "Date and Time Last Active",
-  ];
 
   if (loading) return <p className="text-[#e5e7eb] p-4">Loading...</p>;
   if (error) return <p className="text-[#ef4444] p-4">Error: {error.message}</p>;
@@ -240,10 +246,23 @@ const MembersTable = () => {
               <Tally1 size={16} className="ml-1" />
         </p>
           <MultiSelectDropdown
-            label="Username"
+            label="Name"
             options={usernameOptions}
             selected={filters.usernames}
-            onChange={(val) => setFilters((prev) => ({ ...prev, usernames: val }))}
+            onChange={(val) => {
+              setFilters((prev) => ({ ...prev, usernames: val }));
+              setCursors([null]);
+              setCurrentPage(0);
+              refetch({
+                first: entriesPerPage,
+                after: null,
+                sortBy: sortField,
+                sortOrder: sortOrder,
+                filter: {
+                  name: val.length > 0 ? { eq: val[0] } : undefined,
+                },
+              });
+            }}
           />
           <MultiSelectDropdown
             label="Email Address"
@@ -265,15 +284,27 @@ const MembersTable = () => {
           />
           <SimpleDropdown
             label="Verification Status"
-            options={["Verified", "Pending", "Unverified"]}
+            options={[
+              { label: "Verified", value: "VERIFIED" },
+              { label: "Pending", value: "PENDING" },
+              { label: "Unverified", value: "UNVERIFIED" },
+            ]}
             selected={filters.verificationStatus}
-            onChange={(val) => setFilters((prev) => ({ ...prev, verificationStatus: val }))}
+            onChange={(val) =>
+              setFilters((prev) => ({ ...prev, verificationStatus: val }))
+            }
           />
           <SimpleDropdown
             label="Member Status"
-            options={["Active", "Blacklisted", "Disabled"]}
+            options={[
+              { label: "Active", value: "ACTIVE" },
+              { label: "Blacklisted", value: "BLACKLISTED" },
+              { label: "Disabled", value: "DISABLED" },
+            ]}
             selected={filters.memberStatus}
-            onChange={(val) => setFilters((prev) => ({ ...prev, memberStatus: val }))}
+            onChange={(val) =>
+              setFilters((prev) => ({ ...prev, memberStatus: val }))
+            }
           />
           <DateRangePicker
             selected={filters.dateRange}

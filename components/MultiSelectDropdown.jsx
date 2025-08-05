@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   ChevronDown,
 } from "lucide-react";
 
+
 const MultiSelectDropdown = ({ label, options, selected, onChange }) => {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
+  const dropdownRef = useRef(null);
 
   const filteredOptions = options.filter((o) =>
     o.toLowerCase().includes(search.toLowerCase())
@@ -18,9 +20,24 @@ const MultiSelectDropdown = ({ label, options, selected, onChange }) => {
     onChange(updated);
   };
 
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   return (
-    <div className="relative w-52">
-      <button onClick={() => setOpen(!open)} className="filter-button w-full flex justify-between items-center">
+    <div ref={dropdownRef} className="relative w-52">
+      <button
+        onClick={() => setOpen(!open)}
+        className="filter-button w-full flex justify-between items-center"
+      >
         <span>{label}</span>
         <ChevronDown size={14} />
       </button>
@@ -34,7 +51,10 @@ const MultiSelectDropdown = ({ label, options, selected, onChange }) => {
             className="w-full px-2 py-1 text-sm bg-gray-800 text-white"
           />
           {filteredOptions.map((option) => (
-            <label key={option} className="flex items-center px-2 py-1 text-sm hover:bg-gray-700 cursor-pointer text-white">
+            <label
+              key={option}
+              className="flex items-center px-2 py-1 text-sm hover:bg-gray-700 cursor-pointer text-yellow-400"
+            >
               <input
                 type="checkbox"
                 className="mr-2"
@@ -49,5 +69,6 @@ const MultiSelectDropdown = ({ label, options, selected, onChange }) => {
     </div>
   );
 };
+
 
 export default MultiSelectDropdown;
