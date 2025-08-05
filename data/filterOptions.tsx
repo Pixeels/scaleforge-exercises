@@ -1,4 +1,9 @@
-export const usernameOptions = ["alice", "bob", "charlie"];
+export const usernameOptions = [
+    "morbius", 
+    "Botmind88", 
+    "Khemboi",
+    "ChrisCross432", 
+];
 export const emailOptions = [
   "alice@example.com",
   "bob@example.com",

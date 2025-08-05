@@ -235,6 +235,10 @@ const MembersTable = () => {
       <div className="bg-[#0f172a] border border-gray-700 rounded-xl shadow-lg overflow-hidden">
         {/* Filter Section Header */}
         <div className="filter-buttons-container gap-4 flex flex-wrap mt-2">
+        <p className="filter-label">
+              Filters
+              <Tally1 size={16} className="ml-1" />
+        </p>
           <MultiSelectDropdown
             label="Username"
             options={usernameOptions}
