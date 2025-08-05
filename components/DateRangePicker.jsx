@@ -41,7 +41,7 @@ export default function DateRangePicker({ selected, onChange }) {
     },
   ]);
   const [activePreset, setActivePreset] = useState(null);
-  const pickerRef = useRef(null); // 🆕 ref
+  const pickerRef = useRef(null); 
 
   const handlePresetClick = (p) => {
     setRange([{ startDate: p.range[0], endDate: p.range[1], key: "selection" }]);

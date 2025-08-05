@@ -228,7 +228,6 @@ tr:hover {
   border-radius: 0.375rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
   z-index: 30;
-  max-height: 15rem;
   overflow-y: auto;
   padding: 0.25rem 0;
 }
@@ -255,7 +254,7 @@ tr:hover {
   align-items: center;
   padding: 0.5rem 0.75rem;
   font-size: 0.875rem;
-  color: #facc15; /* yellow text */
+  color: #facc15;
   cursor: pointer;
   transition: background-color 0.2s ease;
 }
@@ -277,7 +276,7 @@ tr:hover {
   text-align: left;
   padding: 0.5rem 1rem;
   font-size: 0.875rem;
-  color: #facc15;
+  color: #ffffff;
   background-color: transparent;
   border: none;
   cursor: pointer;
@@ -286,7 +285,7 @@ tr:hover {
 
 .filter-menu button:hover {
   background-color: #1f2937;
-  color: #fff;
+  color: #facc15;
 }
 
 /* Calendar */

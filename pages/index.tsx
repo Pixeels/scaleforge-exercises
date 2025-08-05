@@ -14,7 +14,6 @@ import {
   Ban,
   ArrowLeft,
   ArrowRight,
-  ChevronDown,
   Tally1,
 } from "lucide-react";
 import {
