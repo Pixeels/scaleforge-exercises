@@ -22,7 +22,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx"
-  ],
+, "components/SimpleDropdown.jsx", "components/MultiSelectDropdown.jsx", "components/DateRangePicker.jsx"  ],
   "exclude": [
     "node_modules"
   ]

@@ -8,7 +8,24 @@ import {
 } from "@apollo/client";
 import Head from "next/head";
 import { useState } from "react";
-import { CircleCheck, CircleAlert, Ban, ArrowLeft, ArrowRight, ChevronDown } from "lucide-react";
+import {
+  CircleCheck,
+  CircleAlert,
+  Ban,
+  ArrowLeft,
+  ArrowRight,
+  ChevronDown,
+  Tally1,
+} from "lucide-react";
+import {
+  usernameOptions,
+  emailOptions,
+  mobileOptions,
+  domainOptions,
+} from "../data/filterOptions";
+import MultiSelectDropdown from '../components/MultiSelectDropdown';
+import SimpleDropdown from '../components/SimpleDropdown';
+import DateRangePicker from '../components/DateRangePicker';
 
 const token = process.env.NEXT_PUBLIC_GRAPHQL_JWT;
 
@@ -38,6 +55,7 @@ const GET_MEMBERS = gql`
   }
 `;
 
+
 const client = new ApolloClient({
   link: new HttpLink({
     uri: "https://report.development.opexa.io/graphql",
@@ -52,21 +70,30 @@ const MembersTable = () => {
   const [entriesPerPage, setEntriesPerPage] = useState(10);
   const [cursors, setCursors] = useState([null]);
   const [currentPage, setCurrentPage] = useState(0);
-  const [sorts, setSorts] = useState({});
+  const [sortField, setSortField] = useState(null);
+  const [sortOrder, setSortOrder] = useState(null);
   const [activeFilter, setActiveFilter] = useState(null);
 
-const getSortArray = () =>
-  Object.entries(sorts).map(([field, direction]) => ({
-    field: String(field).toUpperCase().replace(/\s+/g, "_"),
-    direction: String(direction).toUpperCase(),
-  }));
-
+  const [filters, setFilters] = useState({
+  usernames: [],
+  emails: [],
+  mobileNumbers: [],
+  domains: [],
+  verificationStatus: "",
+  memberStatus: "",
+  dateRange: {
+    from: null,
+    to: null,
+  },
+});
 
   const { loading, error, data, fetchMore, refetch } = useQuery(GET_MEMBERS, {
     variables: {
       first: entriesPerPage,
       after: cursors[currentPage],
-      sort: getSortArray(),
+      sortBy: sortField,
+      sortOrder: sortOrder,
+      filter: undefined,
     },
     notifyOnNetworkStatusChange: true,
   });
@@ -81,6 +108,8 @@ const getSortArray = () =>
         variables: {
           first: entriesPerPage,
           after: cursors[cursors.length - 1],
+          sortBy: sortField,
+          sortOrder: sortOrder,
         },
       });
       const newCursor = result.data.members.pageInfo.endCursor;
@@ -90,19 +119,21 @@ const getSortArray = () =>
   };
 
   const handleSortChange = (field, direction) => {
-    setSorts({ [field]: direction });
+    const normalizedField = field.toUpperCase().replace(/\s+/g, "_");
+    const normalizedDirection = direction.toUpperCase();
+
+    setSortField(normalizedField);
+    setSortOrder(normalizedDirection);
     setActiveFilter(null);
     setCursors([null]);
     setCurrentPage(0);
+
     refetch({
       first: entriesPerPage,
       after: null,
-      sort: [
-        {
-          field: field.toUpperCase().replace(/\s+/g, "_"),
-          direction: direction.toUpperCase(),
-        },
-      ],
+      sortBy: normalizedField,
+      sortOrder: normalizedDirection,
+      filter: undefined,
     });
   };
 
@@ -195,6 +226,7 @@ const getSortArray = () =>
   if (loading) return <p className="text-[#e5e7eb] p-4">Loading...</p>;
   if (error) return <p className="text-[#ef4444] p-4">Error: {error.message}</p>;
 
+
   return (
     <div className="card-style">
       <h1 className="text-2xl font-semibold text-[#e5e7eb] mb-2">Members</h1>
@@ -202,40 +234,50 @@ const getSortArray = () =>
 
       <div className="bg-[#0f172a] border border-gray-700 rounded-xl shadow-lg overflow-hidden">
         {/* Filter Section Header */}
-        <div className="p-4">
-          <p className="text-sm text-gray-400 mb-2">Filter</p>
-          <div className="flex flex-wrap gap-4">
-            {filterFields.map((field) => (
-              <div key={field} className="filter-menu">
-                <button
-                  type="button"
-                  onClick={() => setActiveFilter(activeFilter === field ? null : field)}
-                  className="filter-button"
-                >
-                 <span>{field}</span>
-                    <ChevronDown size={16} className="ml-2" />
-                </button>
-
-                {activeFilter === field && (
-                  <div className="absolute mt-1 w-40 bg-[#1f2937] border border-gray-700 rounded shadow-lg z-30">
-                    <button
-                      onClick={() => handleSortChange(field, "asc")}
-                      className="block w-full text-left px-3 py-1 hover:bg-[#374151] text-[#e5e7eb]"
-                    >
-                      Ascending
-                    </button>
-                    <button
-                      onClick={() => handleSortChange(field, "desc")}
-                      className="block w-full text-left px-3 py-1 hover:bg-[#374151] text-[#e5e7eb]"
-                    >
-                      Descending
-                    </button>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-    </div>
+        <div className="filter-buttons-container gap-4 flex flex-wrap mt-2">
+          <MultiSelectDropdown
+            label="Username"
+            options={usernameOptions}
+            selected={filters.usernames}
+            onChange={(val) => setFilters((prev) => ({ ...prev, usernames: val }))}
+          />
+          <MultiSelectDropdown
+            label="Email Address"
+            options={emailOptions}
+            selected={filters.emails}
+            onChange={(val) => setFilters((prev) => ({ ...prev, emails: val }))}
+          />
+          <MultiSelectDropdown
+            label="Mobile Number"
+            options={mobileOptions}
+            selected={filters.mobileNumbers}
+            onChange={(val) => setFilters((prev) => ({ ...prev, mobileNumbers: val }))}
+          />
+          <MultiSelectDropdown
+            label="Domain"
+            options={domainOptions}
+            selected={filters.domains}
+            onChange={(val) => setFilters((prev) => ({ ...prev, domains: val }))}
+          />
+          <SimpleDropdown
+            label="Verification Status"
+            options={["Verified", "Pending", "Unverified"]}
+            selected={filters.verificationStatus}
+            onChange={(val) => setFilters((prev) => ({ ...prev, verificationStatus: val }))}
+          />
+          <SimpleDropdown
+            label="Member Status"
+            options={["Active", "Blacklisted", "Disabled"]}
+            selected={filters.memberStatus}
+            onChange={(val) => setFilters((prev) => ({ ...prev, memberStatus: val }))}
+          />
+          <DateRangePicker
+            selected={filters.dateRange}
+            onChange={(range) =>
+              setFilters((prev) => ({ ...prev, dateRange: range }))
+            }
+          />
+        </div>
 
         {/* Table */}
         <div className="overflow-x-auto">
@@ -256,13 +298,19 @@ const getSortArray = () =>
               {data.members.edges.map(({ node }) => (
                 <tr key={node.id} className="hover:bg-[#1f2937]">
                   <td className="px-6 py-4 text-[#fbbd2c] font-medium">{node.name}</td>
-                  <td className="px-6 py-4">{renderVerificationStatus(node.verificationStatus)}</td>
+                  <td className="px-6 py-4">
+                    {renderVerificationStatus(node.verificationStatus)}
+                  </td>
                   <td className="px-6 py-4 text-[#d1d5db]">{node.emailAddress}</td>
                   <td className="px-6 py-4 text-[#d1d5db]">{node.mobileNumber}</td>
                   <td className="px-6 py-4 text-[#d1d5db]">{node.domain}</td>
-                  <td className="px-6 py-4 text-[#9ca3af]">{formatDateTime(node.dateTimeCreated)}</td>
+                  <td className="px-6 py-4 text-[#9ca3af]">
+                    {formatDateTime(node.dateTimeCreated)}
+                  </td>
                   <td className="px-6 py-4">{renderAccountStatus(node.status)}</td>
-                  <td className="px-6 py-4 text-[#9ca3af]">{formatDateTime(node.dateTimeLastActive)}</td>
+                  <td className="px-6 py-4 text-[#9ca3af]">
+                    {formatDateTime(node.dateTimeLastActive)}
+                  </td>
                 </tr>
               ))}
             </tbody>
