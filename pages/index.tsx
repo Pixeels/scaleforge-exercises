@@ -28,8 +28,10 @@ import MultiSelectDropdown from '../components/MultiSelectDropdown';
 import SimpleDropdown from '../components/SimpleDropdown';
 import DateRangePicker from '../components/DateRangePicker';
 
+//Access Token
 const token = process.env.NEXT_PUBLIC_GRAPHQL_JWT;
 
+// GraphQL Query
 const GET_MEMBERS = gql`
   query GetMembers($first: Int, $after: Cursor, $filter: MemberFilterInput) {
     members(first: $first, after: $after, filter: $filter) {
@@ -67,6 +69,7 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
+// Component for displaying member data in a paginated table with filters
 const MembersTable = () => {
   const [entriesPerPage, setEntriesPerPage] = useState(10);
   const [cursors, setCursors] = useState([null]);
@@ -76,17 +79,45 @@ const MembersTable = () => {
   const [activeFilter, setActiveFilter] = useState(null);
 
   const [filters, setFilters] = useState({
-  usernames: [],
-  emails: [],
-  mobileNumbers: [],
-  domains: [],
-  verificationStatus: "",
-  memberStatus: "",
-  dateRange: {
-    from: null,
-    to: null,
-  },
-});
+    usernames: [],
+    emails: [],
+    mobileNumbers: [],
+    domains: [],
+    verificationStatus: "",
+    memberStatus: "",
+    dateRange: {
+      from: null,
+      to: null,
+    },
+  });
+
+  const buildFilterObject = () => ({
+    name: filters.usernames.length > 0 ? { equal: filters.usernames[0] } : undefined,
+    emailAddress: filters.emails.length > 0 ? { equal: filters.emails[0] } : undefined,
+    mobileNumber: filters.mobileNumbers.length > 0 ? { equal: filters.mobileNumbers[0] } : undefined,
+    domain: filters.domains.length > 0 ? { equal: filters.domains[0] } : undefined,
+    verificationStatus: filters.verificationStatus.length > 0 ? { equal: filters.verificationStatus[0] } : undefined,
+    status: filters.memberStatus.length > 0 ? { equal: filters.memberStatus[0] } : undefined,
+    dateTimeCreated:
+      filters.dateRange?.from && filters.dateRange?.to
+        ? {
+            greaterThanOrEqual: filters.dateRange.from.toISOString(),
+            lesserThanOrEqual: filters.dateRange.to.toISOString(),
+          }
+        : undefined,
+  });
+
+  const applyFilters = () => {
+    setCursors([null]);
+    setCurrentPage(0);
+    refetch({
+      first: entriesPerPage,
+      after: null,
+      sortBy: sortField,
+      sortOrder: sortOrder,
+      filter: buildFilterObject(),
+    });
+  };
 
   const { loading, error, data, fetchMore, refetch } = useQuery(GET_MEMBERS, {
     variables: {
@@ -94,24 +125,11 @@ const MembersTable = () => {
       after: cursors[currentPage],
       sortBy: sortField,
       sortOrder: sortOrder,
-      filter: {
-        name: filters.usernames.length > 0 ? { equal: filters.usernames[0] } : undefined,
-        emailAddress: filters.emails.length > 0 ? { equal: filters.emails[0] } : undefined,
-        mobileNumber: filters.mobileNumbers.length > 0 ? { equal: filters.mobileNumbers[0] } : undefined,
-        domain: filters.domains.length > 0 ? { equal: filters.domains[0] } : undefined,
-        verificationStatus: filters.verificationStatus.length > 0 ? { equal: filters.verificationStatus[0] }: undefined,
-        status: filters.memberStatus.length > 0 ? { equal: filters.memberStatus[0] }: undefined,
-        dateTimeCreated:
-          filters.dateRange?.from && filters.dateRange?.to
-            ? {
-                greaterThanOrEqual: filters.dateRange.from.toISOString(),
-                lesserThanOrEqual: filters.dateRange.to.toISOString(),
-              }
-            : undefined,
-        },
+      filter: buildFilterObject(),
     },
     notifyOnNetworkStatusChange: true,
   });
+
 
   const handlePageChange = async (newPage) => {
     if (newPage < 0 || newPage > cursors.length) return;
@@ -239,79 +257,60 @@ const MembersTable = () => {
 
       <div className="bg-[#0f172a] border border-gray-700 rounded-xl shadow-lg overflow-hidden">
         {/* Filter Section Header */}
-        <div className="filter-buttons-container gap-4 flex flex-wrap mt-2">
-        <p className="filter-label">
-              Filters
-              <Tally1 size={16} className="ml-1" />
-        </p>
-          <MultiSelectDropdown
-            label="Name"
-            options={usernameOptions}
-            selected={filters.usernames}
-            onChange={(val) => {
-              setFilters((prev) => ({ ...prev, usernames: val }));
-              setCursors([null]);
-              setCurrentPage(0);
-              refetch({
-                first: entriesPerPage,
-                after: null,
-                sortBy: sortField,
-                sortOrder: sortOrder,
-                filter: {
-                  name: val.length > 0 ? { eq: val[0] } : undefined,
-                },
-              });
-            }}
-          />
-          <MultiSelectDropdown
-            label="Email Address"
-            options={emailOptions}
-            selected={filters.emails}
-            onChange={(val) => setFilters((prev) => ({ ...prev, emails: val }))}
-          />
-          <MultiSelectDropdown
-            label="Mobile Number"
-            options={mobileOptions}
-            selected={filters.mobileNumbers}
-            onChange={(val) => setFilters((prev) => ({ ...prev, mobileNumbers: val }))}
-          />
-          <MultiSelectDropdown
-            label="Domain"
-            options={domainOptions}
-            selected={filters.domains}
-            onChange={(val) => setFilters((prev) => ({ ...prev, domains: val }))}
-          />
-          <SimpleDropdown
-            label="Verification Status"
-            options={[
-              { label: "Verified", value: "VERIFIED" },
-              { label: "Pending", value: "PENDING" },
-              { label: "Unverified", value: "UNVERIFIED" },
-            ]}
-            selected={filters.verificationStatus}
-            onChange={(val) =>
-              setFilters((prev) => ({ ...prev, verificationStatus: val }))
-            }
-          />
-          <SimpleDropdown
-            label="Member Status"
-            options={[
-              { label: "Active", value: "ACTIVE" },
-              { label: "Blacklisted", value: "BLACKLISTED" },
-              { label: "Disabled", value: "DISABLED" },
-            ]}
-            selected={filters.memberStatus}
-            onChange={(val) =>
-              setFilters((prev) => ({ ...prev, memberStatus: val }))
-            }
-          />
-          <DateRangePicker
-            selected={filters.dateRange}
-            onChange={(range) =>
-              setFilters((prev) => ({ ...prev, dateRange: range }))
-            }
-          />
-        </div>
+<div className="filter-buttons-container gap-4 flex flex-wrap mt-2">
+    <p className="filter-label">
+      Filters
+      <Tally1 size={16} className="ml-1" />
+    </p>
+    <MultiSelectDropdown
+      label="Name"
+      options={usernameOptions}
+      selected={filters.usernames}
+      onChange={(val) => setFilters((prev) => ({ ...prev, usernames: val }))}
+    />
+    <MultiSelectDropdown
+      label="Email Address"
+      options={emailOptions}
+      selected={filters.emails}
+      onChange={(val) => setFilters((prev) => ({ ...prev, emails: val }))}
+    />
+    <MultiSelectDropdown
+      label="Mobile Number"
+      options={mobileOptions}
+      selected={filters.mobileNumbers}
+      onChange={(val) => setFilters((prev) => ({ ...prev, mobileNumbers: val }))}
+    />
+    <MultiSelectDropdown
+      label="Domain"
+      options={domainOptions}
+      selected={filters.domains}
+      onChange={(val) => setFilters((prev) => ({ ...prev, domains: val }))}
+    />
+    <SimpleDropdown
+      label="Verification Status"
+      options={[
+        { label: "Verified", value: "VERIFIED" },
+        { label: "Pending", value: "PENDING" },
+        { label: "Unverified", value: "UNVERIFIED" },
+      ]}
+      selected={filters.verificationStatus}
+      onChange={(val) => setFilters((prev) => ({ ...prev, verificationStatus: val }))}
+    />
+    <SimpleDropdown
+      label="Member Status"
+      options={[
+        { label: "Active", value: "ACTIVE" },
+        { label: "Blacklisted", value: "BLACKLISTED" },
+        { label: "Disabled", value: "DISABLED" },
+      ]}
+      selected={filters.memberStatus}
+      onChange={(val) => setFilters((prev) => ({ ...prev, memberStatus: val }))}
+    />
+    <DateRangePicker
+      selected={filters.dateRange}
+      onChange={(range) => setFilters((prev) => ({ ...prev, dateRange: range }))}
+    />
+  </div>
 
         {/* Table */}
         <div className="overflow-x-auto">
@@ -395,6 +394,7 @@ const MembersTable = () => {
     </div>
   );
 };
+
 
 export default function Home() {
   return (

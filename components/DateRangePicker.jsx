@@ -53,7 +53,7 @@ export default function DateRangePicker({ selected, onChange }) {
     setShowPicker(false);
   };
 
-  // 🆕 Close dropdown on outside click
+  // Close dropdown on outside click
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (pickerRef.current && !pickerRef.current.contains(event.target)) {

@@ -94,7 +94,7 @@ tr:hover {
   color: #ffffff;
   border: none;
   border-radius: 0.375rem;
-  padding: 0.25rem 0.75rem;
+  padding: 0.5rem 0.75rem;
   font-size: 0.875rem;
   outline: none;
   height: 100%;
@@ -108,7 +108,7 @@ tr:hover {
 .pagination-btn {
   color: #ffffff;
   font-size: 0.875rem;
-  padding: 0.25rem 0.75rem;
+  padding: 0.5rem 0.75rem;
   border-radius: 0.375rem;
   background-color: #1f2937;
   border: 1px solid #374151;
@@ -248,7 +248,7 @@ tr:hover {
   align-items: center;
   padding: 0.5rem 0.75rem;
   font-size: 0.875rem;
-  color: #facc15;
+  color: #ffffff;
   background-color: transparent;
   border: none;
   cursor: pointer;
