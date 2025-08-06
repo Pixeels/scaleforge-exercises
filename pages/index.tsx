@@ -329,24 +329,26 @@ const MembersTable = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-700 bg-[#0f172a] text-[#e5e7eb]">
-              {data.members.edges.map(({ node }) => (
-                <tr key={node.id} className="hover:bg-[#1f2937]">
-                  <td className="px-6 py-4 text-[#fbbd2c] font-medium">{node.name}</td>
-                  <td className="px-6 py-4">
-                    {renderVerificationStatus(node.verificationStatus)}
-                  </td>
-                  <td className="px-6 py-4 text-[#d1d5db]">{node.emailAddress}</td>
-                  <td className="px-6 py-4 text-[#d1d5db]">{node.mobileNumber}</td>
-                  <td className="px-6 py-4 text-[#d1d5db]">{node.domain}</td>
-                  <td className="px-6 py-4 text-[#9ca3af]">
-                    {formatDateTime(node.dateTimeCreated)}
-                  </td>
-                  <td className="px-6 py-4">{renderAccountStatus(node.status)}</td>
-                  <td className="px-6 py-4 text-[#9ca3af]">
-                    {formatDateTime(node.dateTimeLastActive)}
+              {data.members.edges.length === 0 ? (
+                <tr>
+                  <td colSpan={8} className="text-center text-gray-400 py-6">
+                    No results found
                   </td>
                 </tr>
-              ))}
+              ) : (
+                data.members.edges.map(({ node }) => (
+                  <tr key={node.id} className="hover:bg-[#1f2937]">
+                    <td className="px-6 py-4 text-[#fbbd2c] font-medium">{node.name}</td>
+                    <td className="px-6 py-4">{renderVerificationStatus(node.verificationStatus)}</td>
+                    <td className="px-6 py-4 text-[#d1d5db]">{node.emailAddress}</td>
+                    <td className="px-6 py-4 text-[#d1d5db]">{node.mobileNumber}</td>
+                    <td className="px-6 py-4 text-[#d1d5db]">{node.domain}</td>
+                    <td className="px-6 py-4 text-[#9ca3af]">{formatDateTime(node.dateTimeCreated)}</td>
+                    <td className="px-6 py-4">{renderAccountStatus(node.status)}</td>
+                    <td className="px-6 py-4 text-[#9ca3af]">{formatDateTime(node.dateTimeLastActive)}</td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>

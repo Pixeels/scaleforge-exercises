@@ -1,8 +1,12 @@
+/* Tailwind directives */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Font import */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
 
+/* Base styles */
 body {
   font-family: 'Poppins', sans-serif;
 }
@@ -17,15 +21,18 @@ p.description {
   margin-bottom: 1.5rem;
 }
 
-/* Table container */
+/* Card container */
 .card-style {
-  border: 1px solid #374151;
-  border-radius: 0.75rem;
-  background-color: #0f172a;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  padding: 1.5rem;
   width: 95%;
   margin: 0 auto;
+  padding: 1rem;
+  border: 1px solid #374151;
+  border-radius: 0.75rem;
+  background-color: #0a1117;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  overflow: visible !important;
+  position: relative;
+  z-index: 10;
 }
 
 /* Table */
@@ -57,7 +64,9 @@ tr:hover {
 
 .table-wrapper {
   width: 100%;
-  overflow-x: auto;
+  overflow: visible !important;
+  position: relative;
+  z-index: 10;
   border-radius: 0.75rem;
   border: 1px solid #374151;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -102,7 +111,7 @@ tr:hover {
   padding: 0.25rem 0.75rem;
   border-radius: 0.375rem;
   background-color: #1f2937;
-  border: 1px solid #374151; 
+  border: 1px solid #374151;
   cursor: pointer;
   transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
   display: flex;
@@ -142,7 +151,6 @@ tr:hover {
 .status-verified {
   color: #22c55e;
 }
-
 .status-verified .status-circle {
   background-color: #22c55e;
 }
@@ -150,7 +158,6 @@ tr:hover {
 .status-pending {
   color: #e35600;
 }
-
 .status-pending .status-circle {
   background-color: #e35600;
 }
@@ -158,7 +165,6 @@ tr:hover {
 .status-unverified {
   color: #ef4444;
 }
-
 .status-unverified .status-circle {
   background-color: #ef4444;
 }
@@ -167,23 +173,21 @@ tr:hover {
   color: #22c55e;
   background-color: rgba(34, 197, 94, 0.1);
 }
-
 .account-blacklisted {
   color: #ff0000;
   background-color: rgba(255, 0, 0, 0.1);
 }
-
 .account-disabled {
   color: #ef4444;
   background-color: rgba(239, 68, 68, 0.1);
 }
 
-/* Filter dropdown */
+/* Filters */
 .filter-header {
   display: flex;
   align-items: center;
-  gap: 1rem; /* space between label and buttons */
-  flex-wrap: wrap; /* allows wrapping on smaller screens */
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .filter-label {
@@ -198,9 +202,10 @@ tr:hover {
 }
 
 .filter-buttons-container {
+  background-color: #0b1d26;
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem; 
+  gap: 1rem;
   align-items: center;
 }
 
@@ -220,24 +225,44 @@ tr:hover {
   color: #fbbd2c;
 }
 
-
-/* Dropdown buttons */
+/* Dropdown menu */
 .filter-menu {
-  background-color: #0f172a;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 0.25rem;
+  background-color: #0b1d26;
   border: 1px solid #374151;
   border-radius: 0.375rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-  z-index: 30;
-  overflow-y: auto;
+  z-index: 999;
   padding: 0.25rem 0;
-}
-.filter-menu button:hover {
-  background-color: #1f2937;
-  color: #fbbd2c;
-  cursor: pointer;
+  min-height: 2.5rem;
+  max-height: 15rem;
+  overflow-y: auto;
 }
 
-/* Input inside dropdown */
+.filter-menu button,
+.filter-menu label {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  color: #facc15;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  width: 100%;
+  text-align: left;
+}
+
+.filter-menu button:hover,
+.filter-menu label:hover {
+  background-color: #1f2937;
+  color: #fbbd2c;
+}
+
 .filter-menu input[type="text"] {
   background-color: #1f2937;
   color: white;
@@ -248,44 +273,9 @@ tr:hover {
   font-size: 0.875rem;
 }
 
-/* Label inside dropdown list */
-.filter-menu label {
-  display: flex;
-  align-items: center;
-  padding: 0.5rem 0.75rem;
-  font-size: 0.875rem;
-  color: #facc15;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.filter-menu label:hover {
-  background-color: #1f2937;
-}
-
-/* Checkbox */
 .filter-menu input[type="checkbox"] {
   margin-right: 0.5rem;
-  accent-color: #facc15;
-}
-
-/* SimpleDropdown item style */
-.filter-menu button {
-  display: block;
-  width: 100%;
-  text-align: left;
-  padding: 0.5rem 1rem;
-  font-size: 0.875rem;
-  color: #ffffff;
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.filter-menu button:hover {
-  background-color: #1f2937;
-  color: #facc15;
+  accent-color: #3b82f6;
 }
 
 /* Calendar */
@@ -293,17 +283,21 @@ tr:hover {
   background-color: #0f172a !important;
   color: white !important;
 }
+
 .rdrDayToday .rdrDayNumber span {
   border-color: #fbbd2c !important;
 }
+
 .rdrDayNumber span {
   color: white !important;
 }
+
 .rdrMonthAndYearPickers select {
   background-color: #1e293b !important;
   color: white !important;
 }
 
+/* Date range picker */
 .drp-dropdown {
   position: absolute;
   z-index: 50;
@@ -389,7 +383,6 @@ tr:hover {
   }
 }
 
-
 .drp-time-box {
   background-color: #1f2937;
   padding: 0.5rem 1rem;
@@ -430,35 +423,6 @@ tr:hover {
   background-color: #fbbf24;
 }
 
-.drp-footer {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
-@media (min-width: 640px) {
-  .drp-footer {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: flex-end;
-  }
-}
-
-.drp-time-display {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  font-size: 0.875rem;
-}
-
-@media (min-width: 640px) {
-  .drp-time-display {
-    flex-direction: row;
-    gap: 2rem;
-  }
-}
-
 @media (max-width: 640px) {
   .drp-time-box {
     font-size: 0.75rem;
@@ -473,9 +437,5 @@ tr:hover {
   .pagination-wrapper {
     flex-direction: column;
     align-items: flex-start;
-  }
-
-  .card-style {
-    padding: 1rem;
   }
 }
