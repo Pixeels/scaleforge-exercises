@@ -28,6 +28,7 @@ import MultiSelectDropdown from '../components/MultiSelectDropdown';
 import SimpleDropdown from '../components/SimpleDropdown';
 import DateRangePicker from '../components/DateRangePicker';
 
+
 //Access Token
 const token = process.env.NEXT_PUBLIC_GRAPHQL_JWT;
 
@@ -249,6 +250,17 @@ const MembersTable = () => {
   if (loading) return <p className="text-[#e5e7eb] p-4">Loading...</p>;
   if (error) return <p className="text-[#ef4444] p-4">Error: {error.message}</p>;
 
+  const SEARCH_NAMES = gql`
+  query SearchNames($term: String!) {
+    members(filter: { name: { contains: $term } }, first: 10) {
+      edges {
+        node {
+          name
+        }
+      }
+    }
+  }
+`;
 
   return (
     <div className="card-style">
@@ -257,6 +269,7 @@ const MembersTable = () => {
 
       <div className="bg-[#0f172a] border border-gray-700 rounded-xl shadow-lg overflow-hidden">
         {/* Filter Section Header */}
+        
 <div className="filter-buttons-container gap-4 flex flex-wrap mt-2">
     <p className="filter-label">
       Filters

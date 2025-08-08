@@ -1,9 +1,12 @@
 export const usernameOptions = [
     "morbius", 
     "Botmind88", 
-    "Khemboi",
+    "KhemBot",
     "ChrisCross432",
     "joneltest", 
+    "JessKing8923",
+    "gentleotter",
+    "dreamlikegoat"
 ];
 
 export const emailOptions = [
@@ -14,7 +17,8 @@ export const emailOptions = [
   "JessKing8523@gmail.com",
   "Bohman98@gmail.com",
   "Khemboi@gmail.com", 
-  "testuser03@example.com"
+  "testuser03@example.com",
+  "jk10@gmail.com",
 ];
 
 export const mobileOptions = [
@@ -23,13 +27,15 @@ export const mobileOptions = [
     "+639564810539",
     "+639923101936",
     "+639065335313",
+    "+639185636521"
 ];
 
 export const domainOptions = [
     "https://scaleforge.tech",
     "https://crazywm.ph/19", 
     "https://crazywm.openss",
-    "https://crazywm.ph", 
+    "https://crazywm.ph",
+    "development.crazywin.ph"
 ];
 
 export const verificationStatus = [

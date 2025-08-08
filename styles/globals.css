@@ -248,7 +248,7 @@ tr:hover {
   align-items: center;
   padding: 0.5rem 0.75rem;
   font-size: 0.875rem;
-  color: #ffffff;
+  color: #fbbd2c;
   background-color: transparent;
   border: none;
   cursor: pointer;
@@ -260,7 +260,7 @@ tr:hover {
 .filter-menu button:hover,
 .filter-menu label:hover {
   background-color: #1f2937;
-  color: #fbbd2c;
+  color: #ffffff;
 }
 
 .filter-menu input[type="text"] {
@@ -276,6 +276,23 @@ tr:hover {
 .filter-menu input[type="checkbox"] {
   margin-right: 0.5rem;
   accent-color: #3b82f6;
+}
+
+.filter-menu-create {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  color: #ffffff;
+  background-color: transparent;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  transition: background-color 0.2s ease;
+}
+.filter-menu-create:hover {
+  background-color: #1f2937;
+  color: #fbbd2c;
 }
 
 /* Calendar */
